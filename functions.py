@@ -18,6 +18,31 @@ def extract_digits(s: str) -> int:
     return int(first_digit + last_digit)
 
 
+def _parse_game_data(lines: list[str]) -> dict[int, list[tuple[str, int]]]:
+    games = {}
+    for line in lines:
+        # Ensure the line has the correct format
+        if ': ' not in line:
+            continue
+        parts = line.strip().split(': ')
+        game_id_parts = parts[0].split(' ')
+        if len(game_id_parts) < 2:
+            continue  # Skip lines that don't have a valid game ID format
+        game_id = int(game_id_parts[1])
+        cubes_data = parts[1].split('; ')
+
+        # Parsing the cube data for each game
+        cubes = []
+        for data in cubes_data:
+            cube_parts = data.split(', ')
+            for cube in cube_parts:
+                count, color = cube.split(' ')
+                cubes.append((color.strip(), int(count)))  # Stripping whitespace from color
+        games[game_id] = cubes
+
+    return games
+
+
 def word_to_num(s: str) -> str:
     number_words = {
         'one': '1', 'two': '2', 'three': '3',
